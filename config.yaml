@@ -1,7 +1,12 @@
 # do not touch this line
 configVersion: 2
 
-description: "A gesture control for \x16presentations"
-keywords: gesture presentations
+description: An app for pass slides by gestures
+keywords: 'slide, gesture'
 name: slider
 displayName: Slider
+
+services:
+  faceTest:
+    engine: gesture
+    type: palm
