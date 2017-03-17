@@ -5,21 +5,22 @@ var currentx;
 var nextstate = 'init';
 
 var options ={
-refresh: 1000 // tempo para reiniciar depois de uma detecção
+refresh: 15 // tempo para reiniciar depois de uma detecção
 };
 
 
 matrix.led([
           {
             arc: 270,
-            color: 'red',
+            color: 'blue',
             start: 110
           }
         ]).render();
 
 matrix.service('palm',options ).start().then(function locat(data){
-
-  switch (state) {
+	console.log("Tentando");
+ var exec = require('child_process').exec;
+ switch (state) {
     case 'init': //Estado inicial, espera encontrar a posição inicial da mao
     matrix.led('green').render();
     posx =  data.location.x;
@@ -27,7 +28,7 @@ matrix.service('palm',options ).start().then(function locat(data){
     break;
 
     case 'recog': // procura a direção do deslocamento da mao
-    if (posx/100 < data.location.x/100) {
+    if (posx/100 > data.location.x/100) {
       matrix.led([    //arco de led para direita
                 {
                   arc: 180,
@@ -35,8 +36,11 @@ matrix.service('palm',options ).start().then(function locat(data){
                   start: 270
                 }
               ]).render();
+	     
+	      
+	      exec("python client.py", null);
               nextstate = 'delay';
-    } else if (posx/100 > data.location.x/100) {
+    } else if (posx/100 < data.location.x/100) {
       matrix.led([//arco de led para esquerda
                 {
                   arc: 180,
@@ -44,6 +48,7 @@ matrix.service('palm',options ).start().then(function locat(data){
                   start: 90
                 }
               ]).render();
+	      exec("python client.py", null);
               nextstate = 'delay';
     }else{
       matrix.led("purple").render();
@@ -61,7 +66,7 @@ matrix.service('palm',options ).start().then(function locat(data){
       break;
   }
 
-  setTimeout(function () {
+  setInterval(function () {
         state = nextstate;
   }, 500);
 
